@@ -70,3 +70,29 @@ $superheroes = [
   <li><?= $superhero['alias']; ?></li>
 <?php endforeach; ?>
 </ul>
+
+<?php
+$query = filter_input(INPUT_GET, 'query', FILTER_SANITIZE_STRING);
+
+if ($query) {
+    $result = array_filter($superheroes, function ($hero) use ($query) {
+        return strcasecmp($hero['alias'], $query) === 0;
+    });
+    if (!empty($result)) {
+        $hero = array_values($result)[0]; // Get the first (and only) matched superhero
+        echo "<h3>{$hero['alias']}</h3>";
+        echo "<h4>{$hero['name']}</h4>";
+        echo "<p>{$hero['biography']}</p>";
+    } else {
+        echo "Superhero not found";
+    }
+} 
+else {
+    // If no query, list all superheroes
+    echo "<ul>";
+    foreach ($superheroes as $superhero) {
+        echo "<li>{$superhero['alias']}</li>";
+    }
+    echo "</ul>";
+}
+?>
